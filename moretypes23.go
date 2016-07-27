@@ -2,16 +2,16 @@ package main
 
 import (
 	"golang.org/x/tour/wc"
-  "strings"
+	"strings"
 )
 
 func WordCount(s string) map[string]int {
-  tokens := strings.Fields(s)
-  stat := make(map[string]int)
+	tokens := strings.Fields(s)
+	stat := make(map[string]int)
 
-  for i := range tokens {
-    stat[tokens[i]] += 1
-  }
+	for i := range tokens {
+		stat[tokens[i]] += 1
+	}
 
 	return stat
 }
@@ -25,7 +25,7 @@ func main() {
 //  f("I am learning Go!") =
 //   map[string]int{"am":1, "learning":1, "Go!":1, "I":1}
 // PASS
-//  f("The quick brown fox jumped over the lazy dog.") = 
+//  f("The quick brown fox jumped over the lazy dog.") =
 //   map[string]int{"brown":1, "fox":1, "jumped":1, "dog.":1, "The":1, "quick":1, "lazy":1, "over":1, "the":1}
 // PASS
 //  f("I ate a donut. Then I ate another donut.") =
