@@ -17,3 +17,7 @@ func main() {
 	fmt.Println(Sqrt(2))
   fmt.Println(math.Sqrt(2))
 }
+
+// $ go run flowcontrol8.go
+// 1.4142135623730951
+// 1.4142135623730951
