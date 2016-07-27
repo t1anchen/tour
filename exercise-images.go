@@ -7,7 +7,7 @@ import (
 )
 
 type Image struct {
-	w, h  int
+	w, h int
 }
 
 func (img Image) ColorModel() color.Model {
@@ -20,8 +20,8 @@ func (img Image) Bounds() image.Rectangle {
 
 func (img Image) At(x, y int) color.Color {
 	return color.RGBA{
-		uint8(x*y),
-    uint8(x+y),
+		uint8(x * y),
+		uint8(x + y),
 		255,
 		255,
 	}
