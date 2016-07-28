@@ -12,3 +12,4 @@ run:
 	go run exercise-rot-reader.go						# methods/23
 	go run exercise-images.go								# methods/25
 	go run exercise-equivalent-binary-trees.go # concurrency/8
+	go run exercise-web-crawler.go					# concurrency/10
