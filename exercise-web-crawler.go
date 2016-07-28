@@ -1,9 +1,9 @@
 package main
 
 import (
-  "errors"
+	"errors"
 	"fmt"
-  "sync"
+	"sync"
 )
 
 type Fetcher interface {
@@ -13,36 +13,36 @@ type Fetcher interface {
 }
 
 type SafeFetcher struct {
-  fetched map[string]error
-  sync.Mutex
+	fetched map[string]error
+	sync.Mutex
 }
 
-var safe_fetcher = SafeFetcher {
-  fetched: make(map[string]error),
+var safe_fetcher = SafeFetcher{
+	fetched: make(map[string]error),
 }
 
 // Crawl uses fetcher to recursively crawl
 // pages starting with url, to a maximum of depth.
 func Crawl(url string, depth int, fetcher Fetcher) {
 	if depth <= 0 {
-    fmt.Printf("Fetch %v done. Depth 0.\n", url)
-    return
-  }
+		fmt.Printf("Fetch %v done. Depth 0.\n", url)
+		return
+	}
 
-  safe_fetcher.Lock()
-  if _, ok := safe_fetcher.fetched[url]; ok {
-    safe_fetcher.Unlock()
-    fmt.Printf("Fetch %v done. Already fetched.\n", url)
-    return
-  }
-  safe_fetcher.fetched[url] = errors.New("Loading URL ...")
-  safe_fetcher.Unlock()
+	safe_fetcher.Lock()
+	if _, ok := safe_fetcher.fetched[url]; ok {
+		safe_fetcher.Unlock()
+		fmt.Printf("Fetch %v done. Already fetched.\n", url)
+		return
+	}
+	safe_fetcher.fetched[url] = errors.New("Loading URL ...")
+	safe_fetcher.Unlock()
 
 	body, urls, err := fetcher.Fetch(url)
 
-  safe_fetcher.Lock()
-  safe_fetcher.fetched[url] = err
-  safe_fetcher.Unlock()
+	safe_fetcher.Lock()
+	safe_fetcher.fetched[url] = err
+	safe_fetcher.Unlock()
 
 	if err != nil {
 		fmt.Printf("Error on %v. Error is %v\n", url, err)
@@ -50,32 +50,32 @@ func Crawl(url string, depth int, fetcher Fetcher) {
 	}
 	fmt.Printf("found: %s %q\n", url, body)
 
-  q := make(chan bool)
+	q := make(chan bool)
 
 	for i, u := range urls {
-    fmt.Printf("Crawling %v/%v of %v: %v\n", i, len(urls), url, u)
+		fmt.Printf("Crawling %v/%v of %v: %v\n", i, len(urls), url, u)
 		go func(url string) {
-      Crawl(url, depth-1, fetcher)
-      q <- true
-    }(u)
+			Crawl(url, depth-1, fetcher)
+			q <- true
+		}(u)
 	}
 
-  for i, u := range urls {
-    fmt.Printf("[%v] %v/%v Waiting %v\n", url, i, len(urls), u)
-    <-q
-  }
+	for i, u := range urls {
+		fmt.Printf("[%v] %v/%v Waiting %v\n", url, i, len(urls), u)
+		<-q
+	}
 	fmt.Printf("Done with %v\n", url)
 }
 
 func main() {
 	Crawl("http://golang.org/", 4, fetcher)
-  for url, err := range safe_fetcher.fetched {
-    if err != nil {
-      fmt.Printf("%v failed: %v\n", url, err)
-    } else {
-      fmt.Printf("%v was fetched\n", url)
-    }
-  }
+	for url, err := range safe_fetcher.fetched {
+		if err != nil {
+			fmt.Printf("%v failed: %v\n", url, err)
+		} else {
+			fmt.Printf("%v was fetched\n", url)
+		}
+	}
 }
 
 // fakeFetcher is Fetcher that returns canned results.
